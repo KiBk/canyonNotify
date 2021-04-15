@@ -26,8 +26,8 @@ source env/bin/activate
 pip3 install -r requirements.txt 
 ```
 
-Rename config.example.py to config.py and add your requested Telegram TOKEN. It is requested from 
-`BotFather`
+Rename config.example.py to config.py, add your requested Telegram TOKEN (It is requested from 
+`BotFather`) and modify the bikes that you are looking for
 
 ```bash
 mv config.example.py config.py
