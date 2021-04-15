@@ -7,7 +7,7 @@ from telegram import Update
 from telegram.ext import Updater, CommandHandler, CallbackContext
 
 # My bike check
-import parse
+import parser
 # Config with token
 import config
 
@@ -30,14 +30,14 @@ def start(update: Update, _: CallbackContext) -> None:
 def run_check(context: CallbackContext) -> None:
     """Run the check and message if there is a change"""
     job = context.job
-    if parse.update():  
-        context.bot.send_message(job.context, text=parse.status())
+    if parser.update():  
+        context.bot.send_message(job.context, text=parser.status())
 
 
 def get_status(update: Update, _: CallbackContext) -> None:
     """Run the check and message"""
-    parse.update()
-    update.message.reply_text(parse.status())
+    parser.update()
+    update.message.reply_text(parser.status())
 
 
 def remove_job_if_exists(name: str, context: CallbackContext) -> bool:
