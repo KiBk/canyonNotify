@@ -57,4 +57,5 @@ Find your bot in Telegram and Done :)
 - Add a test to see if we are online
 - Add an option to add/remove bikes
 - Don't need to have unique jobs per user
+- Put all python in /src folder
 
