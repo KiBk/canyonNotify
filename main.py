@@ -5,8 +5,9 @@ import logging
 
 from telegram import Update
 from telegram.ext import Updater, CommandHandler, CallbackContext
+
 # My bike check
-from parse import check
+import parse
 # Config with token
 import config
 
@@ -18,27 +19,25 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 
-# Define a few command handlers. These usually take the two arguments update and
-# context. Error handlers also receive the raised TelegramError object in error.
+# chat_id : seconds
+interval_map = {}
+
+
 def start(update: Update, _: CallbackContext) -> None:
-    update.message.reply_text('Hi! Use /set <seconds> to set a timer')
+    update.message.reply_text('Hi! Use /notify to be notified \n /unnotify to stop bein notified \n /set to set interval')
 
 
-def alarm(context: CallbackContext) -> None:
-    """Send the alarm message."""
+def run_check(context: CallbackContext) -> None:
+    """Run the check and message if there is a change"""
     job = context.job
-    context.bot.send_message(job.context, text='Beep!')
+    if parse.update():  
+        context.bot.send_message(job.context, text=parse.status())
 
 
-def alarmBike(context: CallbackContext) -> None:
-    """Send the alarm message."""
-    job = context.job
-    text = "Result: "
-    if check():
-        text += " YEAH"
-    else:
-        text += " NOOO"
-    context.bot.send_message(job.context, text=text)
+def get_status(update: Update, _: CallbackContext) -> None:
+    """Run the check and message"""
+    parse.update()
+    update.message.reply_text(parse.status())
 
 
 def remove_job_if_exists(name: str, context: CallbackContext) -> bool:
@@ -51,41 +50,57 @@ def remove_job_if_exists(name: str, context: CallbackContext) -> bool:
     return True
 
 
-def set_timer(update: Update, context: CallbackContext) -> None:
-    """Add a job to the queue."""
+def set_notify(update: Update, context: CallbackContext) -> None:
+    """Create a repeated job in the queue"""
+    chat_id = update.message.chat_id
+    job_removed = remove_job_if_exists(str(chat_id), context)
+    # Try to find interval
+    try:
+        interval = interval_map[chat_id]
+    except:
+        interval = config.interval
+    context.job_queue.run_repeating(run_check, interval=interval,
+        context=chat_id, name=str(chat_id))
+
+    text = 'Notify was succesfully restarted!' if job_removed \
+        else 'Notify was succesfully started!'
+    update.message.reply_text(text)
+
+
+def set_interval(update: Update, context: CallbackContext) -> None:
+    """Modify the check interval"""
     chat_id = update.message.chat_id
     try:
-        # args[0] should contain the time for the timer in seconds
-        due = int(context.args[0])
-        if due < 0:
+        # args[0] should contain the time for the interval in seconds
+        interval = int(context.args[0])
+        if interval < 0:
             update.message.reply_text('Sorry we can not go back to future!')
             return
 
-        job_removed = remove_job_if_exists(str(chat_id), context)
-        context.job_queue.run_once(alarm, due, context=chat_id, name=str(chat_id))
-        context.job_queue.run_once(alarmBike, due, context=chat_id, name=str(chat_id))
+        interval_map[chat_id] = interval
 
-        text = 'Timer successfully set!'
-        if job_removed:
-            text += ' Old one was removed.'
+        text = f'Interval successfully set to {interval}!'
         update.message.reply_text(text)
 
     except (IndexError, ValueError):
         update.message.reply_text('Usage: /set <seconds>')
 
+    # Restart notify
+    set_notify(update, context)
 
-def unset(update: Update, context: CallbackContext) -> None:
+
+def unset_notify(update: Update, context: CallbackContext) -> None:
     """Remove the job if the user changed their mind."""
     chat_id = update.message.chat_id
     job_removed = remove_job_if_exists(str(chat_id), context)
-    text = 'Timer successfully cancelled!' if job_removed else 'You have no active timer.'
+    text = 'Notify successfully cancelled!' if job_removed else 'You have no active notify.'
     update.message.reply_text(text)
 
 
 def main() -> None:
     """Run bot."""
     # Create the Updater and pass it your bot's token.
-    updater = Updater(conifig.token)
+    updater = Updater(config.token)
 
     # Get the dispatcher to register handlers
     dispatcher = updater.dispatcher
@@ -93,8 +108,10 @@ def main() -> None:
     # on different commands - answer in Telegram
     dispatcher.add_handler(CommandHandler("start", start))
     dispatcher.add_handler(CommandHandler("help", start))
-    dispatcher.add_handler(CommandHandler("set", set_timer))
-    dispatcher.add_handler(CommandHandler("unset", unset))
+    dispatcher.add_handler(CommandHandler("set", set_interval))
+    dispatcher.add_handler(CommandHandler("notify", set_notify))
+    dispatcher.add_handler(CommandHandler("status", get_status))
+    dispatcher.add_handler(CommandHandler("unnotify", unset_notify))
 
     # Start the Bot
     updater.start_polling()

@@ -20,7 +20,12 @@ source env/bin/activate
 pip3 install -r requirements.txt 
 ```
 
-# Notes 
+
+### Todo
+- Add a test to see if we are online
+
+
+### Notes 
 ```bash
 pip3 freeze > requirements.txt
 ```
