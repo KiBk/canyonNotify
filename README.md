@@ -1,4 +1,4 @@
-# Abotu
+# About
 
 It is a python bot that will check availability of a Canyon bike for you. 
 Add a link to the bike that you want. Start the bot. Run `\notify` in the bot.
