@@ -1,4 +1,5 @@
 from config import bike_map
+from time import sleep
 import logging
 
 logging.basicConfig(
@@ -21,10 +22,12 @@ def update():
 def status():
     output = ""
     for bike in bike_map:
-        output += f"{bike.name} is {('UNavailable','available')[bike.avail]} \n"
+        output += f"{('NO','YES')[bike.avail]} - {bike.name} is {('UNavailable','available')[bike.avail]} in size {bike.size} \n"
     return output
 
 
 if __name__ == '__main__':
-    update()
-    print("output is: " + status())
+    while True:
+        if update():
+            print(status())
+        sleep(60)
