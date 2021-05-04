@@ -13,7 +13,7 @@ import config
 
 # Enable logging
 logging.basicConfig(
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=config.log_level
 )
 
 logger = logging.getLogger(__name__)

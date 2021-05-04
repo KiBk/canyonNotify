@@ -2,11 +2,7 @@ from bs4 import BeautifulSoup
 import requests
 import logging
 
-logging.basicConfig(
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO
-)
-
-logger = logging.getLogger("Bike")
+logger = logging.getLogger(__name__)
 
 class Bike:
     def __init__(self, name, link, size="L"):

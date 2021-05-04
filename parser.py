@@ -1,12 +1,13 @@
 from config import bike_map
+from config import log_level
 from time import sleep
 import logging
 
 logging.basicConfig(
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=log_level
 )
 
-logger = logging.getLogger("Parser")
+logger = logging.getLogger(__name__)
 
 
 # Parse all bikes
@@ -30,4 +31,6 @@ if __name__ == '__main__':
     while True:
         if update():
             print(status())
+        else: 
+            print(".", end="")
         sleep(60)

@@ -1,7 +1,9 @@
+import logging
 from bike import Bike
 
 token = "TOKEN"
 interval = 60
+log_level = logging.DEBUG
 
 bike_map = []
 bike_map.append(
