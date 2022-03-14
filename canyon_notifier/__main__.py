@@ -7,9 +7,9 @@ from telegram import Update
 from telegram.ext import Updater, CommandHandler, CallbackContext
 
 # My bike check
-import parser
+from . import parser, config
+
 # Config with token
-import config
 
 # Enable logging
 logging.basicConfig(
