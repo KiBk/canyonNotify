@@ -24,7 +24,7 @@ class Bike:
         soup = BeautifulSoup(req.text, "html.parser")
 
         # Get the list of iteams
-        sizes = soup.find_all(class_="productConfiguration__sizeType")
+        sizes = soup.find_all(class_="productConfiguration__variantType")
         logging.info(
             f'{self.name} parse found {len(sizes)} entries')
         for size in sizes:
