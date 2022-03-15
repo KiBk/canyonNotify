@@ -11,3 +11,4 @@ soupsieve==2.2.1
 tornado==6.1
 tzlocal==2.1
 urllib3==1.26.4
+setuptools==50.3.0

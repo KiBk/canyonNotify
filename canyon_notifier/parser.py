@@ -1,5 +1,5 @@
-from config import bike_map
-from config import log_level
+from .config import bike_map
+from .config import log_level
 from time import sleep
 import logging
 

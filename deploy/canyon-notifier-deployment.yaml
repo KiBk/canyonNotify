@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: canyon-notifier
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      application: canyon-notifier
+  template:
+    metadata:
+      labels:
+        application: canyon-notifier
+    spec:
+      containers:
+      - name: canyon-notifier
+        image: kostz/sketches:canyon-notifier
+        env:
+        - name: TOKEN
+          value: "<PUT YOUR TELEGRAM TOKEN HERE>>"
+        - name: CANYON_BIKE_0
+          value: "Grail Al 6 - forest"
+        - name: CANYON_BIKE_0_URL
+          value: "https://www.canyon.com/en-de/gravel-bikes/all-road/grail/al/grail-6/3092.html?dwvar_3092_pv_rahmenfarbe=GN%2FBK"
+        - name: CANYON_BIKE_0_SIZE
+          value: "XL"
+        - name: CANYON_BIKE_1
+          value: "Grail Al 6 - sand"
+        - name: CANYON_BIKE_1_URL
+          value: "https://www.canyon.com/en-de/gravel-bikes/all-road/grail/al/grail-6/3092.html?dwvar_3092_pv_rahmenfarbe=YE%2FBK"
+        - name: CANYON_BIKE_1_SIZE
+          value: "XL"
+        - name: CANYON_BIKE_2
+          value: "Grail Al 7 eTap - forest"
+        - name: CANYON_BIKE_2_URL
+          value: "https://www.canyon.com/en-de/gravel-bikes/all-road/grail/al/grail-7-etap/3094.html?dwvar_3094_pv_rahmenfarbe=GN%2FBK"
+        - name: CANYON_BIKE_2_SIZE
+          value: "S"
+        resources:
+          limits:
+            cpu: "250m"
+            memory: "500Mi"
+          requests:
+            cpu: "250m"
+            memory: "500Mi"

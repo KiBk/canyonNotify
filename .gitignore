@@ -1,3 +1,7 @@
 env/**
 __pycache__/**
-config.py
+build/
+*.egg-info/
+venv/
+dist/
+*.pyc
